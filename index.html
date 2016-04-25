@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html ng-app="todoApp">
+<head>
+	<title>What-To-Do?</title>
+	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="fonts/roboto_regular_macroman/stylesheet.css">
+</head>
+<body ng-controller="FormController">
+	<div class="container">
+		<div class="header">
+			<h3><a href="http://localhost/todo/">What-To-Do?</a></h3>
+
+			<span class="glyphicon glyphicon-search search-button"></span>
+				<input class="search-bar" type="search" placeholder="Search here" ng-model="query"></input>
+			<span class="glyphicon glyphicon-plus add-button" data-toggle="modal" data-target="#addModal"></span>
+		
+		</div>
+
+		<div class="content">
+
+			<div class="todo-wrapper" ng-repeat="todo in todos | filter:query | orderBy:'id':reverse">
+				<div class="todo-button-wrapper">
+					<div class="todo-button todo-button-{{todo.id}}">
+						<div class="todo-button-custom button-ok">
+							<span class="glyphicon glyphicon-ok"></span>
+							<br>
+							<span>done</span>
+						</div>
+					</div>
+					<div class="todo-button todo-button-{{todo.id}}">
+						<div class="todo-button-custom button-edit" data-toggle="modal" data-target="#editModal" ng-click="showEditTodo(todo.id,edittodo)">
+							<span class="glyphicon glyphicon-pencil"></span>
+							<br>
+							<span>edit</span>
+						</div>
+					</div>
+					<div class="todo-button todo-button-{{todo.id}}">
+						<div class="todo-button-custom button-remove" ng-click="removeTodo(todo.id)">
+							<span class="glyphicon glyphicon-remove"></span>
+							<br>
+							<span>remove</span>
+						</div>
+					</div>
+				</div>
+				<div class="custom-hover" ng-click="toggleClick(todo.id)">
+					<div class="todo-date-wrapper">
+						<p class="todo-startdate">{{todo.start_date}}</p>
+						<span class="glyphicon glyphicon-calendar"></span>
+						<p class="todo-enddate">{{todo.end_date}}</p>
+					</div>
+
+					<div class="todo-content">
+						<div class="todo-header-content">
+							<h3 class="todo-title">{{todo.title}}</h3>
+							<div class="todo-priority">
+								<span class="priority">priority:</span>
+								<span class="priority-value">{{todo.priority}}</span>
+							</div>
+						</div>
+						<p class="todo-desc">{{todo.description}}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Add Todo Modal -->
+	<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+		<div class="modal-dialog" role="document">
+	    <div class="modal-content">
+		    <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		        	<span aria-hidden="true">&times;</span>
+		        </button>
+		        <h4 class="modal-title" id="addModalLabel">Add To Do List</h4>
+		    </div>
+		    <form class="modal-body" name="addTodoForm">
+		    	<p>
+		    		<label for="title">Title</label>
+		    		<input type="text" id="title" placeholder="title" ng-model="newtodo.title" required></input>
+		    	</p>
+		    	<p>
+		    		<label for="description">Description</label>
+		    		<textarea id="description" placeholder="description" ng-model="newtodo.description" required></textarea>	
+		    	</p>
+		    	<p>
+		    		<label for="start-date">Start Date</label>
+		    		<input id="start-date" type="date" ng-model="newtodo.startdate" required></input>
+		    	</p>
+		    	<p>
+		    		<label for="end-date">End Date</label>
+		    		<input id="end-data" type="date" ng-model="newtodo.enddate" required></input>
+		    	</p>
+		    	
+	    		<label>Priority</label>
+	    		<div class="radio-place">
+	    			<input type="radio" name="priority" id="high" value="high" ng-model="newtodo.priority" required><label for="high">High</label></input>
+		    		<input type="radio" name="priority" id="medium" value="medium" ng-model="newtodo.priority" required><label for="medium">Medium</label></input>
+		    		<input type="radio" name="priority" id="low" value="low" ng-model="newtodo.priority" required><label for="low">Low</label></input>
+	    		</div>
+		    	
+		    	<div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <button type="button" class="btn btn-primary" ng-disabled="addTodoForm.$invalid"  ng-click="createTodo(newtodo)">Add</button>
+		    	</div>
+		    </form>
+	    </div>
+		</div>
+	</div>
+
+	<!-- Edit Todo Modal -->
+	<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+		<div class="modal-dialog" role="document">
+	    <div class="modal-content">
+		    <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		        	<span aria-hidden="true">&times;</span>
+		        </button>
+		        <h4 class="modal-title" id="editModalLabel">Edit To Do List</h4>
+		    </div>
+		    <form class="modal-body" name="editTodoForm">
+		    	<p>
+		    		<label for="title">Title</label>
+		    		<input type="text" id="title" placeholder="title" ng-model="title" required></input>
+		    	</p>
+		    	<p>
+		    		<label for="description">Description</label>
+		    		<textarea id="description" placeholder="description" ng-model="description" required></textarea>	
+		    	</p>
+		    	<p>
+		    		<label for="start-date">Start Date</label>
+		    		<input id="start-date" type="date" ng-model="startdate" required></input>
+		    	</p>
+		    	<p>
+		    		<label for="end-date">End Date</label>
+		    		<input id="end-data" type="date" ng-model="enddate" required></input>
+		    	</p>
+
+		    	<span ng-model="id"></span>
+		    	
+	    		<label>Priority</label>
+	    		<div class="radio-place">
+	    			<input type="radio" name="priority" id="high" value="high" ng-model="priority" required><label for="high">High</label></input>
+		    		<input type="radio" name="priority" id="medium" value="medium" ng-model="priority" required><label for="medium">Medium</label></input>
+		    		<input type="radio" name="priority" id="low" value="low" ng-model="priority" required><label for="low">Low</label></input>
+	    		</div>
+		    	
+		    	<div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <button type="button" class="btn btn-primary" ng-disabled="editTodoForm.$invalid"  ng-click="editTodo(id)">Edit</button>
+		    	</div>
+		    </form>
+	    </div>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="js/jquery-2.2.0.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/toggle.js"></script>
+	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript" src="js/script.js"></script>
+	
+</body>
+</html>
